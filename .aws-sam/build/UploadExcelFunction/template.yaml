@@ -15,10 +15,10 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
-  MyLambdaFunction:
+  DownloadExcelFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: app.lambda_handler
+      Handler: download_excel.lambda_handler
       Runtime: python3.12
       Environment:
         Variables:
