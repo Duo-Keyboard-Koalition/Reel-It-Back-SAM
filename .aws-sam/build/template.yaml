@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  MyDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TriggerCountTable
+      AttributeDefinitions:
+      - AttributeName: ID
+        AttributeType: S
+      KeySchema:
+      - AttributeName: ID
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: MyDynamoDBTable
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: MyDynamoDBTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /trigger
+            Method: get
+      CodeUri: MyLambdaFunction
+    Metadata:
+      SamResourceId: MyLambdaFunction
+  UploadExcelFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: upload_excel.lambda_handler
+      Runtime: python3.12
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: MyDynamoDBTable
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: MyDynamoDBTable
+      Events:
+        UploadExcelApi:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: post
+      CodeUri: UploadExcelFunction
+    Metadata:
+      SamResourceId: UploadExcelFunction
