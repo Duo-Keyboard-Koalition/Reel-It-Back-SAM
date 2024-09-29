@@ -1,10 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Resources:
-  MyDynamoDBTable:
+  HTH2024ReelItBackDB:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: TriggerCountTable
+      TableName: HTH2024Table
       AttributeDefinitions:
       - AttributeName: ID
         AttributeType: S
@@ -17,16 +17,16 @@ Resources:
   DownloadExcelFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: download_excel.lambda_handler
+      Handler: download_excel.app.lambda_handler
       Runtime: python3.12
       Environment:
         Variables:
           TABLE_NAME:
-            Ref: MyDynamoDBTable
+            Ref: HTH2024ReelItBackDB
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
-            Ref: MyDynamoDBTable
+            Ref: HTH2024ReelItBackDB
       Events:
         ApiEvent:
           Type: Api
@@ -39,16 +39,16 @@ Resources:
   UploadExcelFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: upload_excel.lambda_handler
+      Handler: upload_excel.app.lambda_handler
       Runtime: python3.12
       Environment:
         Variables:
           TABLE_NAME:
-            Ref: MyDynamoDBTable
+            Ref: HTH2024ReelItBackDB
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
-            Ref: MyDynamoDBTable
+            Ref: HTH2024ReelItBackDB
       Events:
         UploadExcelApi:
           Type: Api
